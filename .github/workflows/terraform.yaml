@@ -1,3 +1,7 @@
+name: Basic workflow for terraform on github
+
+on:
+  push:
 permissions:
   pull-requests: write
 steps:
