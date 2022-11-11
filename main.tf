@@ -6,9 +6,9 @@ terraform {
 }
 
 provider "google" {
-  credentials = jsonencode(var.access_json)
-  project = var.project_id
-  region  = var.region
+  credentials = var.access_json
+  project     = var.project_id
+  region      = var.region
 }
 
 resource "random_string" "this" {

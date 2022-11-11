@@ -10,5 +10,5 @@ variable "region" {
 }
 
 variable "access_json" {
-    type = string
+  type = string
 }
