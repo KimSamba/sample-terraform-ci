@@ -10,9 +10,6 @@ on:
       google_credentials:
         required: true
 
-permissions:
-  pull-requests: write
-
 jobs:
   format-init:
     runs-on: ubuntu-latest

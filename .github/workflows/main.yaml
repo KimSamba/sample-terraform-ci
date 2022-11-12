@@ -5,9 +5,6 @@ on:
   pull_request:
     types: [opened, reopened]
 
-permissions:
-  pull-requests: write
-
 jobs:
   format-init:
     uses: ./.github/workflows/test.yaml
@@ -17,5 +14,18 @@ jobs:
         region: [northamerica-northeast-1]
     with:
       working_directory: deployments/${{ matrix.region }}/${{ matrix.env }}
+    secrets: 
+      google_credentials: ${{ secrets.GOOGLE_CREDENTIALS_TFBACKEND }}
+  deploy-dev:
+    needs: format-init
+    uses: ./.github/workflows/deployment.yaml
+    strategy:
+      matrix:
+        region: [northamerica-northeast-1]
+    with:
+      environment: dev
+      working_directory: deployments/${{ matrix.region }}/dev
+      project_id: rikkelgcloud
+      deploy: ${{ github.event_name == 'pull_request' }}
     secrets: 
       google_credentials: ${{ secrets.GOOGLE_CREDENTIALS_TFBACKEND }}
