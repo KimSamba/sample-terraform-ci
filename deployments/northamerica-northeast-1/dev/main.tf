@@ -1,7 +1,14 @@
 terraform {
   backend "gcs" {
-    bucket  = "rikkelcloud-terraform-state"
-    prefix  = "dev/"
+    bucket = "rikkelcloud-terraform-state"
+    prefix = "dev/"
+  }
+
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 4"
+    }
   }
 }
 
@@ -12,7 +19,7 @@ provider "google" {
 }
 
 module "this" {
-  source = "../../../ecosystem"
+  source = "../../.."
 
   environment = "dev"
 }
