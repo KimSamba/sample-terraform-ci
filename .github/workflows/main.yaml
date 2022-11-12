@@ -1,0 +1,19 @@
+name: Basic workflow for terraform on github
+
+on:
+  push:
+  pull_request:
+    types: [opened, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  format-init:
+    uses: ./.github/workflows/test.yaml
+    strategy:
+      matrix:
+        env: [dev, stage, prod]
+        region: [northamerica-northeast-1]
+    with:
+      working_directory: deployments/${{ matrix.region }}/${{ matrix.env }}

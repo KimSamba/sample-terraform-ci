@@ -1,10 +1,10 @@
-name: Basic workflow for terraform on github
+name: Format and init terraform
 
 on:
-  push:
-  pull_request:
-    types: [opened, reopened]
   workflow_call:
+    inputs:
+      working_directory:
+        required: true
     secrets:
       GOOGLE_CREDENTIALS_TFBACKEND:
         required: true
@@ -13,11 +13,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  test:
-    strategy:
-      matrix:
-        env: [dev, stage, prod]
-        region: [northamerica-northeast-1]
+  format-init:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,7 +22,7 @@ jobs:
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
-        working-directory: deployments/${{ matrix.region }}/${{ matrix.env }}
+        working-directory: ${{working_directory}}
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
@@ -35,8 +31,8 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init
-        working-directory: deployments/${{ matrix.region }}/${{ matrix.env }}
+        working-directory: ${{working_directory}}
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-        working-directory: deployments/${{ matrix.region }}/${{ matrix.env }}
+        working-directory: ${{working_directory}}
