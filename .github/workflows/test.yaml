@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
     types: [opened, reopened]
+  workflow_call:
+    secrets:
+      GOOGLE_CREDENTIALS_TFBACKEND:
+        required: true
 
 permissions:
   pull-requests: write
@@ -27,7 +31,7 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS_TFBACKEND }}'
       - name: Terraform Init
         id: init
         run: terraform init
