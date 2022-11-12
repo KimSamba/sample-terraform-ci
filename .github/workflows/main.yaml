@@ -17,3 +17,5 @@ jobs:
         region: [northamerica-northeast-1]
     with:
       working_directory: deployments/${{ matrix.region }}/${{ matrix.env }}
+    secrets: 
+      google_credentials: ${{ secrets.GOOGLE_CREDENTIALS_TFBACKEND }}

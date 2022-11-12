@@ -4,9 +4,10 @@ on:
   workflow_call:
     inputs:
       working_directory:
+        type: string
         required: true
     secrets:
-      GOOGLE_CREDENTIALS_TFBACKEND:
+      google_credentials:
         required: true
 
 permissions:
@@ -22,17 +23,17 @@ jobs:
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
-        working-directory: ${{working_directory}}
+        working-directory: ${{ inputs.working_directory }}
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS_TFBACKEND }}'
+          credentials_json: '${{ secrets.google_credentials }}'
       - name: Terraform Init
         id: init
         run: terraform init
-        working-directory: ${{working_directory}}
+        working-directory: ${{ inputs.working_directory }}
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-        working-directory: ${{working_directory}}
+        working-directory: ${{ inputs.working_directory }}
