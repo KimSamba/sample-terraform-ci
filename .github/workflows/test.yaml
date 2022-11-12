@@ -4,6 +4,7 @@ on:
   push:
   pull_request:
     types: [opened, reopened]
+
 permissions:
   pull-requests: write
 
@@ -21,17 +22,17 @@ jobs:
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
-        working-directory: deployments/${{matrix.region}}/${{matrix.env}}
-      - id: 'auth'
+        working-directory: deployments/${{ matrix.region }}/${{ matrix.env }}
+      - id: auth
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: ${{secrets.GCP_ACCESS_JSON}}
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
       - name: Terraform Init
         id: init
         run: terraform init
-        working-directory: deployments/${{matrix.region}}/${{matrix.env}}
+        working-directory: deployments/${{ matrix.region }}/${{ matrix.env }}
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-        working-directory: deployments/${{matrix.region}}/${{matrix.env}}
+        working-directory: deployments/${{ matrix.region }}/${{ matrix.env }}

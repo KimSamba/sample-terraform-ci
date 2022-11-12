@@ -4,5 +4,6 @@ variable "project_id" {
 }
 
 variable "access_json" {
+  description = "JSON string for the service account credentials"
   type = string
 }
