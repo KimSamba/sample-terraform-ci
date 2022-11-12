@@ -1,14 +1,7 @@
-name: Format and init terraform
+name: Format and linting of terraform
 
 on:
   workflow_call:
-    inputs:
-      working_directory:
-        type: string
-        required: true
-    secrets:
-      google_credentials:
-        required: true
 
 jobs:
   format-init:
@@ -16,21 +9,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
+
+      ## TF LINT
+      - uses: terraform-linters/setup-tflint@v2
+        name: Setup TFLint
+      - name: Show version
+        run: tflint --version
+      - name: Init TFLint
+        run: tflint --init
+      - name: Run TFLint
+        run: tflint -f compact --module --config=".tflint.hcl"
+
+      ## TF FMT
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
-        continue-on-error: true
-        working-directory: ${{ inputs.working_directory }}
-      - id: auth
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v1'
-        with:
-          credentials_json: '${{ secrets.google_credentials }}'
-      - name: Terraform Init
-        id: init
-        run: terraform init
-        working-directory: ${{ inputs.working_directory }}
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color
-        working-directory: ${{ inputs.working_directory }}

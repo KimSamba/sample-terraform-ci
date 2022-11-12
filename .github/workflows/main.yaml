@@ -6,8 +6,11 @@ on:
     types: [opened, reopened]
 
 jobs:
-  format-init:
+  test:
     uses: ./.github/workflows/test.yaml
+  validate:
+    needs: test
+    uses: ./.github/workflows/validate.yaml
     strategy:
       matrix:
         env: [dev, stage, prod]
@@ -17,7 +20,7 @@ jobs:
     secrets: 
       google_credentials: ${{ secrets.GOOGLE_CREDENTIALS_TFBACKEND }}
   deploy-dev:
-    needs: format-init
+    needs: validate
     uses: ./.github/workflows/deployment.yaml
     strategy:
       matrix:

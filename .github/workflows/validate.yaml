@@ -1,0 +1,31 @@
+name: Init and validate terraform configuration
+
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        type: string
+        required: true
+    secrets:
+      google_credentials:
+        required: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - id: auth
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.google_credentials }}'
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ${{ inputs.working_directory }}
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ${{ inputs.working_directory }}
