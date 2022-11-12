@@ -4,13 +4,11 @@ on:
   workflow_call:
 
 jobs:
-  format-init:
+  tflint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
-
-      ## TF LINT
       - uses: terraform-linters/setup-tflint@v2
         name: Setup TFLint
       - name: Show version
@@ -19,8 +17,18 @@ jobs:
         run: tflint --init
       - name: Run TFLint
         run: tflint -f compact --module --config=".tflint.hcl"
-
-      ## TF FMT
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
       - name: Terraform fmt
-        id: fmt
-        run: terraform fmt -check
+        run: terraform fmt -check -recursive -no-color
+  tfsec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install TFSec
+        run: curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+      - name: Run TFSec
+        run: tfsec
