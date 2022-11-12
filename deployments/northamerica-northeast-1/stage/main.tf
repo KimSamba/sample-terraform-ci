@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
     bucket  = "rikkelcloud-terraform-state"
-    prefix  = "dev/"
+    prefix  = "stage/"
   }
 }
 
@@ -14,5 +14,5 @@ provider "google" {
 module "this" {
   source = "../../../ecosystem"
 
-  environment = "dev"
+  environment = "stage"
 }
