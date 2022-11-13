@@ -3,6 +3,7 @@ terraform {
     bucket = "rikkelcloud-terraform-state"
     prefix = "prod/"
   }
+  required_version = ">= 1.3"
   required_providers {
     google = {
       source  = "hashicorp/google"
