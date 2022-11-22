@@ -1,0 +1,34 @@
+name: Basic workflow for terraform on github
+
+on:
+  push:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  test:
+    uses: ./.github/workflows/test.yaml
+  validate:
+    needs: test
+    uses: ./.github/workflows/validate.yaml
+    strategy:
+      matrix:
+        env: [dev, stage, prod]
+        region: [northamerica-northeast-1]
+    with:
+      working_directory: deployments/${{ matrix.region }}/${{ matrix.env }}
+    secrets:
+      google_credentials: ${{ secrets.GOOGLE_CREDENTIALS_TFBACKEND }}
+  deploy-dev:
+    needs: validate
+    uses: ./.github/workflows/deployment.yaml
+    strategy:
+      matrix:
+        region: [northamerica-northeast-1]
+    with:
+      environment: dev
+      working_directory: deployments/${{ matrix.region }}/dev
+      project_id: rikkelgcloud
+      deploy: ${{ github.event_name == 'pull_request' }}
+    secrets:
+      google_credentials: ${{ secrets.GOOGLE_CREDENTIALS_TFBACKEND }}

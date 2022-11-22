@@ -1,0 +1,20 @@
+name: Format and linting of terraform
+
+on:
+  workflow_call:
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - uses: hashicorp/setup-terraform@v2
+      - uses: terraform-linters/setup-tflint@v2
+      - name: Install TFSec
+        run: curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+      - name: Install Checkov
+        run: pip3 install checkov
+      - uses: pre-commit/action@v3.0.0
